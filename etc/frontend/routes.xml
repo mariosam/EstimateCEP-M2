@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<!--
+/**
+ * XML routes
+ * 
+ * @author      MarioSAM <eu@mariosam.com.br>
+ * @version     1.0.0
+ * @date        2020/12
+ * @copyright   Blog do Mario SAM
+ * 
+ * Create a controller URI to access by http using ajax.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <router id="standard">
+        <route id="estimatecep" frontName="cepvalues">
+            <module name="MarioSAM_EstimateCep"/>
+        </route>
+    </router>
+</config>

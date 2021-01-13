@@ -1,0 +1,23 @@
+{
+    "name": "mariosam/module-estimatecep",
+    "version": "1.0.0",
+    "description": "Module to estimate CEP price delivery.",
+    "type": "magento2-module",
+    "license": "OSL-3.0",
+    "authors": [
+        {
+            "email": "eu@mariosam.com.br",
+            "name": "MarioSAM"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "MarioSAM\\EstimateCep\\": ""
+        }
+    }
+}

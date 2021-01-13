@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * XML catalog_product_view
+ * 
+ * @author      MarioSAM <eu@mariosam.com.br>
+ * @version     1.0.0
+ * @date        2020/12
+ * @copyright   Blog do Mario SAM
+ * 
+ * Insert the new file into the Magento theme to load the code.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <!-- load the module page to product detail page -->
+            <block class="Magento\Framework\View\Element\Template" name="calculate_cep_product_page" template="MarioSAM_EstimateCep::calculate_cep.phtml" ifconfig="estimatecep/cep_load_values/enabled">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">MarioSAM\EstimateCep\ViewModel\EstimateCepViewModel</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

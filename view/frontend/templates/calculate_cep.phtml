@@ -1,0 +1,203 @@
+<?php
+/**
+ * HTML calculate_cep
+ * 
+ * @author      MarioSAM <eu@mariosam.com.br>
+ * @version     1.0.0
+ * @date        2020/12
+ * @copyright   Blog do Mario SAM
+ * 
+ * This page control how the estimate CEP price will be displayed.
+ */
+
+/** inicializando model e variaveis */
+$viewModel = $block->getViewModel();
+
+if ( $viewModel->getEnabled() ) {
+//nao carregar pagina se o produto for virtual ou digital
+if ( 'downloadable' != $viewModel->getProductType() && 'virtual' != $viewModel->getProductType() ) {
+
+$_proPrice = $viewModel->getProductPrice();
+$_proWeight = $viewModel->getProductWeight();
+
+$_cepOrigin = $viewModel->getCepOrigin();
+$_position = $viewModel->getCepPosition();
+$_cepModes = $viewModel->getCepModes();
+$_cepEmpresa = $viewModel->getCepEmpresa();
+$_cepPass = $viewModel->getCepSenha();
+$_cepComprimento = $viewModel->getCepComprimento();
+$_cepDiametro = $viewModel->getCepDiametro();
+$_cepAltura = $viewModel->getCepAltura();
+$_cepLargura = $viewModel->getCepLargura();
+$_cepFormato = $viewModel->getCepFormato();
+
+$_cepFree = $viewModel->getCepFree();
+$_cepFreePrice = $viewModel->getCepFreeOverPrice();
+$_cepFreeDays = $viewModel->getCepFreeDays();
+?>
+<?php /* CSS styles */ ?>
+<style type="text/css">
+#calc_cep label { font-weight: bold; }
+#cep { width: 100px; margin: 0px 0px 0px 10px; }
+#res_frete { background: #fafbfd; padding: 10px 5px 10px 15px; margin: 0px 0px 10px 0px; }
+#cep-button { vertical-align: top; }
+
+.ocultar { display: none; }
+.exibir { display: block; }
+/**
+.loader { 
+    background: url('<?php echo $this->getViewFileUrl("images/loader-2.gif"); ?>') no-repeat 50% 50%;
+    height: 30px;
+    width: 30px;
+    box-sizing: border-box;
+    display: inline-block;
+}
+**/
+.tocep {}
+.tipo { font-weight: bold; display: inline-block; width: 30%; }
+.prazo { display: inline-block; width: 20%; }
+.valor { font-weight: bold; text-align: right; }
+
+<?php echo $viewModel->getCssCustomCalculateCep(); ?>
+</style>
+
+<?php /* Javascript controls */ ?>
+<script type="text/javascript">
+//<![CDATA[
+require([
+    'jquery',
+    'jquery/jquery.cookie'
+], function ($) {
+    $(document).ready(function() {
+        <?php /* falta inserir a mascara no campo e validar cep com mask */ ?>
+        //$("#cep").mask("99999-999");
+        <?php /* insere o box de calculo de frete dinamicamente na pagina */ ?>
+        var pDiv = $("<?php echo $_position; ?>").first();
+        $("#calc_cep").appendTo( pDiv );
+
+        <?php /* controla as mensagens de validacao e retorno do calculo de frete */ ?>
+        function showMsgCep( msg ) {
+            $('#res_frete').removeClass('ocultar');
+            $('#res_frete').addClass('exibir');
+            $('#res_frete').html('').append( msg );
+        }
+
+        <?php /* pre-chamada para validar o campo cep */ ?>
+        function beforeCalcep( cep ) {
+            cep = cep.replace(/\D/g, '');
+            var validacep = /^[0-9]{8}$/; //Expressão regular para validar o CEP.
+
+            <?php /* Valida o formato do CEP. */ ?>
+            if ( validacep.test( cep ) && cep.length > 5 ) {
+                calcep( cep ); //chama funcao ajax
+            } else {
+                showMsgCep( "<?= __('Please check the CEP, the format looks invalid for us!') ?>" );
+            }
+        }
+
+        <?php /* ajax para estimar valor do frete e prazo */ ?>
+        function calcep( cep ) {
+            document.cookie = "cep-correios="+cep+"; -1"; //limpa cookie
+
+            $.ajax({
+                url: '<?php echo $block->getUrl("cepvalues/index/ajaxcontroller"); ?>',
+                type: 'POST',
+                dataType: 'json',
+                //showLoader: true,
+                data: {
+                    format: 'json',
+                    cepModes: '<?php echo $_cepModes; ?>',
+                    cepDestino: cep,
+                    cepOrigem: '<?php echo $_cepOrigin; ?>',
+                    cepPeso: '<?php echo $_proWeight; ?>',
+                    cepEmpresa: '<?php echo $_cepEmpresa; ?>',
+                    cepCodigo: '<?php echo $_cepPass; ?>',
+                    cepComprimento: '<?php echo $_cepComprimento; ?>',
+                    cepDiametro: '<?php echo $_cepDiametro; ?>',
+                    cepAltura: '<?php echo $_cepAltura; ?>',
+                    cepLargura: '<?php echo $_cepLargura; ?>',
+                    cepFormato: '<?php echo $_cepFormato; ?>'
+                },
+                beforeSend: function() {
+                    showMsgCep( "<?= __('Please wait, searching CEP...') ?>" );
+                    //$('#res_frete').html('').append('<span class="loading">'+imgLoad+" "+$t('Loading...')+'</span>');
+                },
+                success: function(response) {
+                    var res   = response;
+                    var saida = "";
+
+                    <?php /* se foi configurado para exibir frete gratis */ ?>
+                    <?php if ( $_cepFree ) { if ( $_proPrice > $_cepFreePrice ) { ?>
+                    saida = '<p><span class="tipo"><?php echo __('FREE'); ?></span> <span class="prazo"><?php echo $_cepFreeDays; ?> <?= __('day(s)') ?></span> <span class="valor"><?= __('R$ 0,00') ?></span></p>';
+                    <?php } } ?>
+
+                    try {
+                        $.each(res, function() {
+                            if ( 200 === this.status ) {
+                                saida += '<p><span class="tipo">'+this.tipo+'</span> <span class="prazo">'+this.prazo+' <?= __('day(s)') ?></span> <span class="valor"><?= __('R$') ?> '+this.valor+'</span></p>';
+                            } else {
+                                saida += '<p>'+this.tipo+": "+this.msg+'</p>';
+                            }
+                        });
+                    } catch(e) {
+                        //console.log( "<?= __('Ajax CalCep -Success- Error: %1') ?>" );
+                        saida = e.message;
+                    }
+                    showMsgCep( saida );
+                },
+                error: function (xhr, status, errorThrown) {
+                    //console.log( "<?= __('Ajax CalCep Error: %1') ?>" );
+                    showMsgCep( errorThrown );
+                },
+                complete: function() { /*console.log( "<?= __('Ajax CalCep Complete') ?>" );*/ }
+            });
+        }
+
+        <?php /* sempre que o campo cep perder o foco */ ?>
+        $("#cep").blur( function() {
+            var cep = $(this).val();
+            <?php /* se o campo cep foi preenchido */ ?>
+            if (cep !== "") {
+                beforeCalcep( cep );
+            } else {
+                showMsgCep( "<?= __('Sorry! No input, no valid response to you.') ?>" );
+            }
+        });
+
+        <?php /* sempre que clicar no botao de estimar frete */ ?>
+        $("#cep-button").click( function() {
+            var cep = $("#cep").val();
+            <?php /* se o campo cep foi preenchido */ ?>
+            if (cep !== "") {
+                beforeCalcep( cep );
+            } else {
+                showMsgCep( "<?= __('Sorry! No input, no valid response to you.') ?>" );
+            }
+        });
+
+        <?php /* se pegou um cookie na sessao, chama calculo de frete automaticamente */ ?>
+        <?php $cookieManager = $viewModel->getCookieManager(); ?>
+        if ( $('#cep').val() === '' ) {
+            $('#cep').val('<?php echo $cookieManager->getCookie("cep-correios"); ?>');
+            <?php /* dispara evento de checagem automaticamente */ ?>
+            if ($('#cep').val() !== "") { beforeCalcep( $('#cep').val()); }
+        }
+            
+        <?php echo $viewModel->getJsCustomCalculateCep(); ?>
+    });
+});
+//]]>
+</script>
+
+<?php /* HTLM displays  */ ?>
+<div id="calc_cep">
+    <p>
+        <label><?= __('Estimate Shipping:') ?> </label>
+        <span class="in_cep"><input type="text" name="cep" id="cep" min="5" max="9"></span>
+        <button type="button" title="<?= __('>>') ?>" class="action tocep" id="cep-button"><span><?= __('>>') ?></span></button>
+    </p>
+    <div id="res_frete" class="ocultar"><span class="loader"></span><?= __('Please wait, searching CEP...') ?></div> 
+</div>
+
+<?php } /* getProductType */ ?>
+<?php } /* getEnabled */ ?>

@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * XML system
+ * 
+ * @author      MarioSAM <eu@mariosam.com.br>
+ * @version     1.0.0
+ * @date        2020/12
+ * @copyright   Blog do Mario SAM
+ * 
+ * This XML prepare the admin page config of this module.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <!-- Tab is the menu option at left [MARIOSAM] -->
+        <tab id="mariosam" translate="label" sortOrder="250">
+            <label>Mario SAM</label>
+        </tab>
+        <!-- Section is a sub-menu option inside Tab. -->
+        <section id="estimatecep" translate="label" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>C.E.P. Estimate</label>
+            <tab>mariosam</tab>
+            <!-- resource is to ACL -->
+            <resource>MarioSAM_EstimateCep::module_estimatecep_config</resource>
+            <!-- Group is the box at right with your config options. -->
+            <group id="cep_load_values" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Estimate CEP Settings</label>
+                <comment><![CDATA[How to use EstimateCEP? Access the Mario SAM blog and read the post.]]></comment>
+                <!-- Turn On or Turn off this module -->
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Module Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <!-- Set the message to show the user about your policy -->
+                <field id="country" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Countrie</label>
+                    <source_model>MarioSAM\EstimateCep\Model\Config\Source\Countries</source_model>
+                    <comment>Which countrie do you like to Estimate CEP?</comment>
+                </field>
+                <!-- -->
+                <field id="list_codes" translate="label" type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Estimate Options</label>        
+                    <source_model>MarioSAM\EstimateCep\Model\Config\Source\ListCodes</source_model>
+                    <comment>Select the codes that you want to calculate.</comment>
+                 </field>
+                <!--  -->
+                <field id="cep_free" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show FREE option shipping?</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Include free shipping in the result list.</comment>
+                </field>
+                <!--  -->
+                <field id="cep_free_value" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Product Price</label>
+                    <comment>When the price of product greater than.</comment>
+                    <validate>required-entry</validate>
+                    <depends>
+                        <field id="estimatecep/cep_load_values/cep_free">1</field>
+                    </depends>
+                </field>
+                <!--  -->
+                <field id="cep_free_days" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Delivery Days</label>
+                    <comment>How many days to delivery this option.</comment>
+                    <validate>required-entry</validate>
+                    <depends>
+                        <field id="estimatecep/cep_load_values/cep_free">1</field>
+                    </depends>
+                </field>
+                <!-- Set the place where the box will be displayed -->
+                <field id="cep_position" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Box Position</label>
+                    <validate>required-entry</validate>
+                    <comment>CSS id/class name of reference in your theme.</comment>
+                </field>
+                <!-- Set custom CSS to shopping cart -->
+                <field id="css_cep" translate="label" type="textarea" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom CSS</label>
+                    <comment>You can add personal css script.</comment>
+                </field>
+                <!-- Set custom JS to shopping cart -->
+                <field id="js_cep" translate="label" type="textarea" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom JS</label>
+                    <comment>You can add personal javascript code.</comment>
+                </field>
+            </group>
+            <group id="cep_send_config" translate="label" type="text" sortOrder="400" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Custom Send Configuration</label>
+                <!--  -->
+                <field id="cep_nCdEmpresa" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Administrative Code</label>
+                    <comment>If you have a contract with ETC. ex.: 08082650</comment>
+                </field>
+                <!--  -->
+                <field id="cep_sDsSenha" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Password</label>
+                    <comment>Pass of your contract. ex.: 564321</comment>
+                </field>
+                <!--  -->
+                <field id="cep_nVlComprimento" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Length of your package</label>
+                    <comment>Value in centimeter. ex.: 18</comment>
+                </field>
+                <!--  -->
+                <field id="cep_nVlDiametro" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Diameter of your package</label>
+                    <comment>Value in centimeter. ex.: 5</comment>
+                </field>
+                <!--  -->
+                <field id="cep_nVlAltura" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Height of your package</label>
+                    <comment>Value in centimeter. ex.: 2</comment>
+                </field>
+                <!--  -->
+                <field id="cep_nVlLargura" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Width of your package</label>
+                    <comment>Value in centimeter. ex.: 11</comment>
+                </field>
+                <!--  -->
+                <field id="cep_nCdFormato" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Format of delivery</label>
+                    <source_model>MarioSAM\EstimateCep\Model\Config\Source\SendFormats</source_model>
+                    <comment>Select your format of delivery.</comment>
+                </field>
+            </group>
+            <!-- Group to talk with the clients of this module. -->
+            <group id="cep_next_version" translate="label" type="text" sortOrder="999" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Expected for the next EstimateCEP versions</label>
+                <comment>
+                    <![CDATA[Below a list of things that I expect to implement in the next version of EstimateCEP module:]]>
+                </comment>
+                <field id="my_contact" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>My Contact</label>
+                    <comment>You can talk with me and/or hire me!</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

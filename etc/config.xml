@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * XML config
+ * 
+ * @author      MarioSAM <eu@mariosam.com.br>
+ * @version     1.0.0
+ * @date        2020/12
+ * @copyright   Blog do Mario SAM
+ * 
+ * Load CEP information for our customer in frontend.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <!-- Set default values for fields of this module -->
+        <estimatecep>
+            <cep_load_values>
+                <enabled>0</enabled>
+                <country>brazil</country>
+                <cep_position>.product-add-form</cep_position>
+                <list_codes>04510,04014</list_codes>
+                <cep_free>1</cep_free>
+                <cep_free_value>10</cep_free_value>
+                <cep_free_days>14</cep_free_days>
+                <css_cep>
+                    <![CDATA[#cep {}
+#res_frete {}
+#cep-button {}
+#calc_cep label {}
+.tocep {}
+.tipo {}
+.prazo {}
+.valor {}]]>
+                </css_cep>
+                <js_cep></js_cep>
+            </cep_load_values>
+            <cep_send_config>
+                <cep_nCdEmpresa></cep_nCdEmpresa>
+                <cep_sDsSenha></cep_sDsSenha>
+                <cep_nVlComprimento>18</cep_nVlComprimento>
+                <cep_nVlDiametro>5</cep_nVlDiametro>
+                <cep_nVlAltura>2</cep_nVlAltura>
+                <cep_nVlLargura>11</cep_nVlLargura>
+                <cep_nCdFormato>1</cep_nCdFormato>
+            </cep_send_config>
+            <cep_next_version>
+               <my_contact>eu@mariosam.com.br</my_contact>
+            </cep_next_version>
+        </estimatecep>
+    </default>
+</config>
